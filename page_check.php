@@ -14,6 +14,11 @@
         if(!empty($_REQUEST["url"])){
            $url = $_REQUEST["url"];
         }
+        
+        $methode = "get";
+        if(!empty($_REQUEST["methode"])){
+           $methode = $_REQUEST["methode"];
+        }
       ?>
       
       <nav class="navbar navbar-default">
@@ -36,8 +41,23 @@
                  <input type="submit" class="btn btn-primary" value="Go">
              </span>
            </div>
-           
           </div>
+          
+          <div class="form-group row">
+              <label class="col-sm-2 control-label">Request-Type: </label>
+                <div class="col-sm-10">
+                    <label class="radio-inline">
+                        <input type="radio" name="methode" <?php echo ($methode == "get"? 'checked="checked"': ''); ?> value="get"> GET
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="methode" <?php echo ($methode == "post"? 'checked="checked"': ''); ?> value="post"> POST
+                    </label>
+                    <label class="radio-inline">
+                      <input type="radio" name="methode" <?php echo ($methode == "put"? 'checked="checked"': ''); ?> value="put"> PUT
+                    </label>
+                </div>
+          </div>
+          
       </form>
       </div>
     
@@ -63,6 +83,12 @@
             $ch = curl_init($url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HEADER, true);
+            
+            if($methode == "post"){
+                curl_setopt($ch, CURLOPT_POST, true);
+            } elseif ($methode == "put"){
+                curl_setopt($ch, CURLOPT_PUT, true);
+            }
 
             $response = curl_exec($ch);
             $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
